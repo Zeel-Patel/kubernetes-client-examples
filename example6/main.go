@@ -70,6 +70,32 @@ func main() {
 	fmt.Println("performing get on jane")
 	fmt.Println(myFIFO.Get(jane))
 
-	myFIFO.Pop(jane2)
+	fmt.Println("before pop")
+	fmt.Println(myFIFO.ListKeys())
+	var process cache.ProcessFunc
+	process = HandleDeltas
+	myFIFO.Pop(cache.PopProcessFunc(process))
 
+	fmt.Println("printing key list after pop")
+	fmt.Println(myFIFO.ListKeys())
+
+}
+
+func HandleDeltas(obj interface{}, initialList bool) error {
+	if deltas, ok := obj.(cache.Deltas); ok {
+		for _, d := range deltas {
+			obj := d.Object
+
+			switch d.Type {
+			case cache.Added:
+				fmt.Printf("handeled delta added %v", obj)
+			case cache.Updated:
+				fmt.Printf("handeled delta updated %v", obj)
+			case cache.Deleted:
+				fmt.Printf("handeled delta deleted %v", obj)
+			}
+		}
+		return errors.New("object given as Process argument is not Deltas")
+	}
+	return nil
 }
