@@ -21,16 +21,12 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-//
 // A generic event handler for pod events
-//
 func handleEvent(pod *v1.Pod, eventType string) {
 	fmt.Printf("Recorded event of type %s on pod %s\n", eventType, pod.Name)
 }
 
-//
 // Our event handler for adding a pod
-//
 func onAdd(obj interface{}) {
 	pod, ok := obj.(*v1.Pod)
 	if !ok {
@@ -40,9 +36,7 @@ func onAdd(obj interface{}) {
 	handleEvent(pod, "ADD")
 }
 
-//
 // Our event handler for deletion of a pod
-//
 func onDelete(obj interface{}) {
 	pod, ok := obj.(*v1.Pod)
 	if !ok {
@@ -52,9 +46,7 @@ func onDelete(obj interface{}) {
 	handleEvent(pod, "DEL")
 }
 
-//
 // Our event handler for modification of a pod
-//
 func onUpdate(old interface{}, new interface{}) {
 	pod, ok := old.(*v1.Pod)
 	if !ok {
@@ -64,9 +56,7 @@ func onUpdate(old interface{}, new interface{}) {
 	handleEvent(pod, "MOD")
 }
 
-//
 // Create a channel that will be closed when a signal is received
-//
 func createSignalHandler() (stopCh <-chan struct{}) {
 	stop := make(chan struct{})
 	c := make(chan os.Signal, 2)
@@ -84,7 +74,7 @@ func main() {
 	// Create a clientset
 	//
 	home := homedir.HomeDir()
-	kubeconfig := filepath.Join(home, ".kube", "config")
+	kubeconfig := filepath.Join(home, ".kube", "uconfig")
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 
 	if err != nil {
